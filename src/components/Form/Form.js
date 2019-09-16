@@ -9,7 +9,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import CustomButton from '../CustomButton/CustomButton';
 import './Form.css';
 import Moment from 'moment';
-import axios from 'axios';
+import axios from '../../axiosUrl';
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -64,7 +64,7 @@ const Form = ({ contractInfo }) => {
 
     axios({
       method: 'patch',
-      url: `https://cors-anywhere.herokuapp.com/https://europe-west1-contracts-app-cb26b.cloudfunctions.net/contracts/${contractId}`,
+      url: `/${contractId}`,
       headers: {
         'Access-Control-Allow-Origin': '*',
         'Content-Type': 'application/json',
