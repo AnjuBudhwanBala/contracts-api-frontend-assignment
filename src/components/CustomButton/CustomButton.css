@@ -1,0 +1,18 @@
+.CustomButton {
+  text-align: center;
+}
+
+.CustomButton button {
+  color: #fff;
+  background: rgb(0, 132, 132);
+  border: none;
+  padding: 8px 30px;
+  margin: 20px auto;
+  opacity: 0.6;
+  transition: 0.3s;
+}
+.CustomButton button:hover {
+  box-shadow: 4px 4px 10px #ccc;
+  border-radius: 2px;
+  opacity: 1;
+}
