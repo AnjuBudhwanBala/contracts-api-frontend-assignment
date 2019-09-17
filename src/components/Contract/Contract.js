@@ -4,6 +4,7 @@ import './Contract.css';
 import CustomButton from '../CustomButton/CustomButton';
 import Modal from '../../components/Modal/Modal';
 import CustomDateConverter from '../CustomDateConverter/CustomDateConverter';
+import Form from '../Form/Form';
 
 const Contract = ({ contractInfo }) => {
   const [modalState, setModalState] = useState(false);
@@ -57,20 +58,14 @@ const Contract = ({ contractInfo }) => {
             <span className="disabledText">Not schedule for renewal</span>
           )}
         </ul>
-        <CustomButton
-          click={openModalHandler}
-          disabled={modalState}
-          btnType="button"
-        >
+        <CustomButton click={openModalHandler} btnType="button">
           Edit
         </CustomButton>
       </div>
       {modalState ? (
-        <Modal
-          contractInfo={contractInfo}
-          closeModal={closeModalHandler}
-          modalState={modalState}
-        ></Modal>
+        <Modal closeModal={closeModalHandler} modalState={modalState}>
+          <Form contractInfo={contractInfo} click={closeModalHandler}></Form>
+        </Modal>
       ) : null}
     </div>
   );

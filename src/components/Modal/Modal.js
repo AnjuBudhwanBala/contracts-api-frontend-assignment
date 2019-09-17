@@ -5,9 +5,8 @@ import {
   useMediaQuery,
   DialogContent
 } from '@material-ui/core';
-import Form from '../Form/Form';
 
-const Modal = ({ modalState, contractInfo, closeModal }) => {
+const Modal = ({ modalState, closeModal, children }) => {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('xs'));
   return (
@@ -17,9 +16,7 @@ const Modal = ({ modalState, contractInfo, closeModal }) => {
       onClose={closeModal}
       aria-labelledby="responsive-dialog-title"
     >
-      <DialogContent>
-        <Form contractInfo={contractInfo} closeModal={closeModal} />
-      </DialogContent>
+      <DialogContent>{children}</DialogContent>
     </Dialog>
   );
 };

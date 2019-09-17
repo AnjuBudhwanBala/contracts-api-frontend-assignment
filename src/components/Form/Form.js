@@ -35,7 +35,7 @@ const useStyles = makeStyles(theme => ({
   checked: {}
 }));
 
-const Form = ({ contractInfo, closeModal }) => {
+const Form = ({ contractInfo, closeModal, click }) => {
   const {
     company,
     periodStart,
@@ -55,6 +55,7 @@ const Form = ({ contractInfo, closeModal }) => {
   const [endDate, setEndDate] = React.useState(contractEndDate);
   const [schedule, setSchedule] = React.useState(scheduleValue);
   const [renewalDate, setRenewalDate] = React.useState(new Date());
+  const [error, setError] = React.useState(false);
 
   //styles to use inside materialUI form Component
   const classes = useStyles();
@@ -62,7 +63,10 @@ const Form = ({ contractInfo, closeModal }) => {
   useEffect(() => {
     // scheduleForRenewal === true ? setRadioValue('no') : setRadioValue('yes');
     radioValue === 'yes' ? setSchedule(true) : setSchedule(false);
-  }, [scheduleForRenewal, radioValue]);
+    new Date(startDate).getTime() > new Date(endDate).getTime()
+      ? setError(true)
+      : setError(false);
+  }, [scheduleForRenewal, radioValue, startDate, endDate, error]);
 
   //for set value of radio button
   const handleChange = event => {
@@ -122,6 +126,7 @@ const Form = ({ contractInfo, closeModal }) => {
             format="dd/MM/yyyy"
             margin="normal"
             id="end"
+            error={error}
             label="Contract End Date"
             value={endDate}
             onChange={date => setEndDate(date)}
@@ -177,7 +182,9 @@ const Form = ({ contractInfo, closeModal }) => {
           </MuiPickersUtilsProvider>
         ) : null}
 
-        <CustomButton btnType="submit">Submit</CustomButton>
+        <CustomButton btnType="submit" isDisabled={error}>
+          Submit
+        </CustomButton>
       </form>
     </div>
   );
