@@ -8,7 +8,9 @@ const FetchedContracts = () => {
 
   useEffect(() => {
     axios
-      .get('https://contracts-app-cb26b.firebaseio.com/contracts.json')
+      .get(
+        'https://europe-west1-contracts-app-cb26b.cloudfunctions.net/contracts'
+      )
       .then(response => {
         setContractsData(response.data);
       })

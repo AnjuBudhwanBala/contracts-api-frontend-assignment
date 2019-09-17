@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { RadioGroup, Radio, FormControlLabel } from '@material-ui/core';
 import DateFnsUtils from '@date-io/date-fns';
 import {
@@ -35,24 +35,34 @@ const useStyles = makeStyles(theme => ({
   checked: {}
 }));
 
-const Form = ({ contractInfo }) => {
-  const [radioValue, setRadioValue] = React.useState('no');
+const Form = ({ contractInfo, closeModal }) => {
   const {
     company,
     periodStart,
     periodEnd,
     negotiationRenewalDate,
+    scheduleForRenewal,
     contractId
   } = contractInfo;
 
+  //state of form component
+  const [radioValue, setRadioValue] = React.useState('no');
   const contractStartDate = Moment(periodStart).calendar();
   const contractEndDate = Moment(periodEnd).calendar();
+  const scheduleValue = scheduleForRenewal;
 
   const [startDate, setStartDate] = React.useState(contractStartDate);
   const [endDate, setEndDate] = React.useState(contractEndDate);
+  const [schedule, setSchedule] = React.useState(scheduleValue);
   const [renewalDate, setRenewalDate] = React.useState(new Date());
+
   //styles to use inside materialUI form Component
   const classes = useStyles();
+
+  useEffect(() => {
+    // scheduleForRenewal === true ? setRadioValue('no') : setRadioValue('yes');
+    radioValue === 'yes' ? setSchedule(true) : setSchedule(false);
+  }, [scheduleForRenewal, radioValue]);
 
   //for set value of radio button
   const handleChange = event => {
@@ -66,19 +76,13 @@ const Form = ({ contractInfo }) => {
       method: 'patch',
       url: `/${contractId}`,
       headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Content-Type': 'application/json',
-        crossdomain: true
-      },
-
-      mode: 'no-cors',
-      proxy: {
-        host: '127.0.0.1',
-        port: 9000
+        'Content-Type': 'application/json'
       },
       data: {
-        periodStart: contractStartDate,
-        periodEnd: contractEndDate
+        periodStart: startDate,
+        periodEnd: endDate,
+        scheduleForRenewal: schedule,
+        negotiationRenewalDate: renewalDate
       }
     })
       .then(response => {
@@ -87,7 +91,6 @@ const Form = ({ contractInfo }) => {
       })
       .catch(error => console.log(error));
   };
-  // console.log(selectedDate);
 
   return (
     <div>

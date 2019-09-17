@@ -18,7 +18,7 @@ const Modal = ({ modalState, contractInfo, closeModal }) => {
       aria-labelledby="responsive-dialog-title"
     >
       <DialogContent>
-        <Form contractInfo={contractInfo} />
+        <Form contractInfo={contractInfo} closeModal={closeModal} />
       </DialogContent>
     </Dialog>
   );
