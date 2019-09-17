@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from '../../axiosUrl';
+import axios from 'axios';
 import Spinner from '../../components/Spinner/Spinner';
 import Contract from '../../components/Contract/Contract';
 
@@ -10,7 +10,9 @@ const FetchedContracts = () => {
 
   useEffect(() => {
     axios
-      .get('/')
+      .get(
+        'https://europe-west1-contracts-app-cb26b.cloudfunctions.net/contracts'
+      )
       .then(response => {
         setContractsData(response.data);
         setLoading(false);

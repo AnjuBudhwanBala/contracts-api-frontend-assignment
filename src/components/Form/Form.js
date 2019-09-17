@@ -63,6 +63,7 @@ const Form = ({ contractInfo, closeModal, click }) => {
   useEffect(() => {
     // scheduleForRenewal === true ? setRadioValue('no') : setRadioValue('yes');
     radioValue === 'yes' ? setSchedule(true) : setSchedule(false);
+
     new Date(startDate).getTime() > new Date(endDate).getTime()
       ? setError(true)
       : setError(false);
@@ -134,8 +135,14 @@ const Form = ({ contractInfo, closeModal, click }) => {
               'aria-label': 'change date'
             }}
           />
+
           <br />
         </MuiPickersUtilsProvider>
+        {error ? (
+          <p style={{ fontSize: '11px', color: 'red' }}>
+            Contract End Date can not be greater than start date
+          </p>
+        ) : null}
         <label>Schedule for Renewal Contract?</label>
         <RadioGroup
           aria-label="renewal"
