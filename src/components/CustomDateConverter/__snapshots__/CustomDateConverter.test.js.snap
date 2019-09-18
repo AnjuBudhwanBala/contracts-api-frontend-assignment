@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CustomDateConverter Component should render CustomDateConverter component 1`] = `ShallowWrapper {}`;

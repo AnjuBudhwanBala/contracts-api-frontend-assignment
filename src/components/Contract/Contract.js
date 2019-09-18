@@ -6,7 +6,7 @@ import Modal from '../../components/Modal/Modal';
 import CustomDateConverter from '../CustomDateConverter/CustomDateConverter';
 import Form from '../Form/Form';
 
-const Contract = ({ contractInfo, refreshContracts }) => {
+export const Contract = ({ contractInfo, refreshContracts }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const {
     company,
@@ -16,12 +16,15 @@ const Contract = ({ contractInfo, refreshContracts }) => {
     scheduleForRenewal
   } = contractInfo;
 
+  // to open Modal
   const openModalHandler = () => {
     setIsModalOpen(true);
   };
+  //to close Modal
   const closeModalHandler = () => {
     setIsModalOpen(false);
   };
+  //update contract after refresh
   const updateContract = () => {
     refreshContracts();
   };
@@ -58,7 +61,11 @@ const Contract = ({ contractInfo, refreshContracts }) => {
               </span>
             </li>
           ) : (
-            <span className="disabledText">Not schedule for renewal</span>
+            <span
+              style={{ color: '#888', fontSize: '12px', marginTop: '20px' }}
+            >
+              Not schedule for renewal
+            </span>
           )}
         </ul>
         <CustomButton click={openModalHandler} btnType="button">
