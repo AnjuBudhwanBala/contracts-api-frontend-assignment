@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { RadioGroup, Radio, FormControlLabel } from '@material-ui/core';
 import DateFnsUtils from '@date-io/date-fns';
 import {
@@ -47,17 +47,17 @@ const Form = props => {
   } = props.contractInfo;
 
   //state of form component
-  const [radioValue, setRadioValue] = React.useState('no');
+  const [radioValue, setRadioValue] = useState('no');
   const contractStartDate = Moment(periodStart, 'YYYY-MM-DDTHH:mm:ss.sssZ');
   const contractEndDate = Moment(periodEnd, 'YYYY-MM-DDTHH:mm:ss.sssZ');
   const scheduleValue = scheduleForRenewal;
 
-  const [startDate, setStartDate] = React.useState(contractStartDate);
-  const [endDate, setEndDate] = React.useState(contractEndDate);
-  const [schedule, setSchedule] = React.useState(scheduleValue);
-  const [renewalDate, setRenewalDate] = React.useState(new Date());
-  const [error, setError] = React.useState(false);
-  const [loading, setLoading] = React.useState(false);
+  const [startDate, setStartDate] = useState(contractStartDate);
+  const [endDate, setEndDate] = useState(contractEndDate);
+  const [schedule, setSchedule] = useState(scheduleValue);
+  const [renewalDate, setRenewalDate] = useState(new Date());
+  const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   //styles to use inside materialUI form Component
   const classes = useStyles();
