@@ -10,6 +10,7 @@ import CustomButton from '../CustomButton/CustomButton';
 import './Form.css';
 import Moment from 'moment';
 import axios from '../../axiosUrl';
+import Spinner from '../../components/Spinner/Spinner';
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -35,20 +36,20 @@ const useStyles = makeStyles(theme => ({
   checked: {}
 }));
 
-const Form = ({ contractInfo, closeModal, click }) => {
+const Form = props => {
   const {
     company,
-    periodStart,
-    periodEnd,
+    contractId,
     negotiationRenewalDate,
-    scheduleForRenewal,
-    contractId
-  } = contractInfo;
+    periodEnd,
+    periodStart,
+    scheduleForRenewal
+  } = props.contractInfo;
 
   //state of form component
   const [radioValue, setRadioValue] = React.useState('no');
-  const contractStartDate = Moment(periodStart).calendar();
-  const contractEndDate = Moment(periodEnd).calendar();
+  const contractStartDate = Moment(periodStart, 'YYYY-MM-DDTHH:mm:ss.sssZ');
+  const contractEndDate = Moment(periodEnd, 'YYYY-MM-DDTHH:mm:ss.sssZ');
   const scheduleValue = scheduleForRenewal;
 
   const [startDate, setStartDate] = React.useState(contractStartDate);
@@ -56,6 +57,7 @@ const Form = ({ contractInfo, closeModal, click }) => {
   const [schedule, setSchedule] = React.useState(scheduleValue);
   const [renewalDate, setRenewalDate] = React.useState(new Date());
   const [error, setError] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
 
   //styles to use inside materialUI form Component
   const classes = useStyles();
@@ -76,7 +78,7 @@ const Form = ({ contractInfo, closeModal, click }) => {
 
   const handleSubmit = e => {
     e.preventDefault();
-
+    setLoading(true);
     axios({
       method: 'patch',
       url: `/${contractId}`,
@@ -91,110 +93,118 @@ const Form = ({ contractInfo, closeModal, click }) => {
       }
     })
       .then(response => {
-        console.log(response.json);
+        setLoading(false);
+        props.updateContract();
+        props.closeModal();
         return response.json;
       })
-      .catch(error => console.log(error));
+      .catch(error => {
+        setLoading(false);
+      });
   };
 
-  return (
-    <div>
-      <div className="CompanyIcon">
-        <i className="fa fa-industry" aria-hidden="true"></i>
-      </div>
-      <div className="name">{company}</div>
-      <form onSubmit={handleSubmit}>
-        <MuiPickersUtilsProvider utils={DateFnsUtils}>
-          <KeyboardDatePicker
-            name="startDate"
-            disableToolbar
-            variant="inline"
-            format="dd/MM/yyyy"
-            margin="normal"
-            id="start"
-            label="Contract Start Date"
-            value={startDate}
-            onChange={date => setStartDate(date)}
-            KeyboardButtonProps={{
-              'aria-label': 'change date'
-            }}
-          />
-          <br />
-          <KeyboardDatePicker
-            name="endDate"
-            disableToolbar
-            variant="inline"
-            format="dd/MM/yyyy"
-            margin="normal"
-            id="end"
-            error={error}
-            label="Contract End Date"
-            value={endDate}
-            onChange={date => setEndDate(date)}
-            KeyboardButtonProps={{
-              'aria-label': 'change date'
-            }}
-          />
-
-          <br />
-        </MuiPickersUtilsProvider>
-        {error ? (
-          <p style={{ fontSize: '11px', color: 'red' }}>
-            Contract End Date can not be greater than start date
-          </p>
-        ) : null}
-        <label>Schedule for Renewal Contract?</label>
-        <RadioGroup
-          aria-label="renewal"
-          name="renewal"
-          value={radioValue}
-          onChange={handleChange}
-          className={classes.radioGroup}
-        >
-          <FormControlLabel
-            value="yes"
-            control={
-              <Radio
-                classes={{ root: classes.radio, checked: classes.checked }}
-              />
-            }
-            label="Yes"
-          />
-          <FormControlLabel
-            value="no"
-            control={
-              <Radio
-                classes={{ root: classes.radio, checked: classes.checked }}
-              />
-            }
-            label="No"
-          />
-        </RadioGroup>
-        {radioValue === 'yes' ? (
+  if (loading) {
+    return <Spinner isLoading={loading} />;
+  } else {
+    return (
+      <div>
+        <div className="CompanyIcon">
+          <i className="fa fa-industry" aria-hidden="true"></i>
+        </div>
+        <div className="name">{company}</div>
+        <form onSubmit={handleSubmit}>
           <MuiPickersUtilsProvider utils={DateFnsUtils}>
             <KeyboardDatePicker
-              name="renewalDate"
+              name="startDate"
               disableToolbar
               variant="inline"
               format="dd/MM/yyyy"
               margin="normal"
               id="start"
-              label="Renew Contract"
-              value={renewalDate}
-              onChange={date => setRenewalDate(date)}
+              label="Contract Start Date"
+              value={startDate}
+              onChange={date => setStartDate(date)}
               KeyboardButtonProps={{
                 'aria-label': 'change date'
               }}
             />
-          </MuiPickersUtilsProvider>
-        ) : null}
+            <br />
+            <KeyboardDatePicker
+              name="endDate"
+              disableToolbar
+              variant="inline"
+              format="dd/MM/yyyy"
+              margin="normal"
+              id="end"
+              error={error}
+              label="Contract End Date"
+              value={endDate}
+              onChange={date => setEndDate(date)}
+              KeyboardButtonProps={{
+                'aria-label': 'change date'
+              }}
+            />
 
-        <CustomButton btnType="submit" isDisabled={error}>
-          Submit
-        </CustomButton>
-      </form>
-    </div>
-  );
+            <br />
+          </MuiPickersUtilsProvider>
+          {error ? (
+            <p style={{ fontSize: '11px', color: 'red' }}>
+              Contract End Date can not be greater than start date
+            </p>
+          ) : null}
+          <label>Schedule for Renewal Contract?</label>
+          <RadioGroup
+            aria-label="renewal"
+            name="renewal"
+            value={radioValue}
+            onChange={handleChange}
+            className={classes.radioGroup}
+          >
+            <FormControlLabel
+              value="yes"
+              control={
+                <Radio
+                  classes={{ root: classes.radio, checked: classes.checked }}
+                />
+              }
+              label="Yes"
+            />
+            <FormControlLabel
+              value="no"
+              control={
+                <Radio
+                  classes={{ root: classes.radio, checked: classes.checked }}
+                />
+              }
+              label="No"
+            />
+          </RadioGroup>
+          {radioValue === 'yes' ? (
+            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+              <KeyboardDatePicker
+                name="renewalDate"
+                disableToolbar
+                variant="inline"
+                format="dd/MM/yyyy"
+                margin="normal"
+                id="start"
+                label="Renew Contract"
+                value={renewalDate}
+                onChange={date => setRenewalDate(date)}
+                KeyboardButtonProps={{
+                  'aria-label': 'change date'
+                }}
+              />
+            </MuiPickersUtilsProvider>
+          ) : null}
+
+          <CustomButton btnType="submit" isDisabled={error}>
+            Submit
+          </CustomButton>
+        </form>
+      </div>
+    );
+  }
 };
 
 export default Form;

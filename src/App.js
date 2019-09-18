@@ -1,13 +1,13 @@
 import React from 'react';
 import './App.css';
-import FetchedContracts from './pages/FetchedContracts/FetchedContracts';
+import Contracts from './pages/Contracts/Contracts';
 import ErrorBoundary from './components/ErrorBoundary/ErrorBoundary';
 
 function App() {
   return (
     <div className="App">
       <ErrorBoundary>
-        <FetchedContracts />
+        <Contracts />
       </ErrorBoundary>
     </div>
   );

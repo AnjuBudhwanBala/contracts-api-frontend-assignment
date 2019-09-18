@@ -6,8 +6,8 @@ import Modal from '../../components/Modal/Modal';
 import CustomDateConverter from '../CustomDateConverter/CustomDateConverter';
 import Form from '../Form/Form';
 
-const Contract = ({ contractInfo }) => {
-  const [modalState, setModalState] = useState(false);
+const Contract = ({ contractInfo, refreshContracts }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const {
     company,
     negotiationRenewalDate,
@@ -17,10 +17,13 @@ const Contract = ({ contractInfo }) => {
   } = contractInfo;
 
   const openModalHandler = () => {
-    setModalState(true);
+    setIsModalOpen(true);
   };
   const closeModalHandler = () => {
-    setModalState(false);
+    setIsModalOpen(false);
+  };
+  const updateContract = () => {
+    refreshContracts();
   };
 
   return (
@@ -33,7 +36,7 @@ const Contract = ({ contractInfo }) => {
         </div>
         <ul>
           <li>
-            <span>{company} </span>
+            <span>{company}</span>
           </li>
           <li>
             <strong>Start : </strong>
@@ -62,9 +65,13 @@ const Contract = ({ contractInfo }) => {
           Edit
         </CustomButton>
       </div>
-      {modalState ? (
-        <Modal closeModal={closeModalHandler} modalState={modalState}>
-          <Form contractInfo={contractInfo} click={closeModalHandler}></Form>
+      {isModalOpen ? (
+        <Modal closeModal={closeModalHandler} modalState={isModalOpen}>
+          <Form
+            contractInfo={contractInfo}
+            updateContract={updateContract}
+            closeModal={closeModalHandler}
+          ></Form>
         </Modal>
       ) : null}
     </div>
