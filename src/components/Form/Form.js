@@ -42,12 +42,6 @@ export const Form = ({ contractInfo, updateContract, closeModal }) => {
     'YYYY-MM-DDTHH:mm:ss.sssZ'
   );
   const scheduleValue = scheduleForRenewal;
-  let radioChecked = 'yes';
-  if (scheduleValue === true) {
-    radioChecked = 'no';
-  } else {
-    radioChecked = 'yes';
-  }
 
   //initial state values
   const [startDate, setStartDate] = useState(contractStartDate);
@@ -80,7 +74,7 @@ export const Form = ({ contractInfo, updateContract, closeModal }) => {
   const handleSubmit = e => {
     e.preventDefault();
     setLoading(true);
-    console.log(data);
+
     axios({
       method: 'patch',
       url: `/contracts/${contractId}`,

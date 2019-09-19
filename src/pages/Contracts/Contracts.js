@@ -1,23 +1,43 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useReducer } from 'react';
 import axios from '../../axiosUrl';
 import Spinner from '../../components/Spinner/Spinner';
 import Contract from '../../components/Contract/Contract';
 
+const initialState = {
+  loading: true,
+  error: false,
+  contractsData: []
+};
+
+const reducer = (state, action) => {
+  switch (action.type) {
+    case 'FETCH_SUCCESS':
+      return {
+        loading: false,
+        error: false,
+        contractsData: action.payload
+      };
+    case 'FETCH_ERROR':
+      return {
+        loading: false,
+        error: true
+      };
+    default: {
+      return state;
+    }
+  }
+};
 export const Contracts = () => {
-  const [contractsData, setContractsData] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
+  const [state, dispatch] = useReducer(reducer, initialState);
 
   const fetchContracts = () => {
     axios
       .get('/contracts')
       .then(response => {
-        setContractsData(response.data);
-        setLoading(false);
+        dispatch({ type: 'FETCH_SUCCESS', payload: response.data });
       })
       .catch(error => {
-        setLoading(false);
-        setError(true);
+        dispatch({ type: 'FETCH_SUCCESS' });
       });
   };
 
@@ -30,16 +50,16 @@ export const Contracts = () => {
     fetchContracts();
   };
 
-  if (loading) {
-    return <Spinner isLoading={loading} />;
+  if (state.loading) {
+    return <Spinner isLoading={state.loading} />;
   } else {
-    if (error) {
+    if (state.error) {
       return <p id="error">Sorry we are unable to fetch Contracts</p>;
     } else {
-      if (contractsData.length === 0) {
+      if (state.contractsData.length === 0) {
         return <p>You do not have any contracts</p>;
       } else {
-        return contractsData.map(data => (
+        return state.contractsData.map(data => (
           <Contract
             key={data.contractId}
             contractInfo={data}
