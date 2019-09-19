@@ -22,6 +22,8 @@ const useStyles = makeStyles(theme => ({
   checked: {}
 }));
 
+var data = {};
+
 export const Form = ({ contractInfo, updateContract, closeModal }) => {
   const {
     company,
@@ -48,7 +50,6 @@ export const Form = ({ contractInfo, updateContract, closeModal }) => {
   }
 
   //initial state values
-  const [radioValue, setRadioValue] = useState(radioChecked);
   const [startDate, setStartDate] = useState(contractStartDate);
   const [endDate, setEndDate] = useState(contractEndDate);
   const [schedule, setSchedule] = useState(scheduleValue);
@@ -60,33 +61,33 @@ export const Form = ({ contractInfo, updateContract, closeModal }) => {
   const classes = useStyles();
 
   useEffect(() => {
-    radioValue === 'yes' ? setSchedule(true) : setSchedule(false);
+    data = {};
+  }, []);
+
+  useEffect(() => {
     new Date(startDate).getTime() > new Date(endDate).getTime()
       ? setError(true)
       : setError(false);
-  }, [scheduleForRenewal, radioValue, startDate, endDate, error]);
+  }, [startDate, endDate]);
 
   //radio button handler
   const handleChange = event => {
-    setRadioValue(event.target.value);
+    event.target.value === 'yes' ? setSchedule(true) : setSchedule(false);
+    data['scheduleForRenewal'] = event.target.value === 'yes' ? true : false;
   };
 
   //form submit handler
   const handleSubmit = e => {
     e.preventDefault();
     setLoading(true);
+    console.log(data);
     axios({
       method: 'patch',
       url: `/contracts/${contractId}`,
       headers: {
         'Content-Type': 'application/json'
       },
-      data: {
-        periodStart: startDate,
-        periodEnd: endDate,
-        scheduleForRenewal: schedule,
-        negotiationRenewalDate: renewalDate
-      }
+      data: data
     })
       .then(response => {
         setLoading(false);
@@ -114,7 +115,11 @@ export const Form = ({ contractInfo, updateContract, closeModal }) => {
             labelValue="Contract Start Date"
             dateValue={startDate}
             id="start"
-            change={date => setStartDate(date)}
+            error={error}
+            change={date => {
+              setStartDate(date);
+              data['periodStart'] = date;
+            }}
           />
           <br />
           <DatePicker
@@ -122,12 +127,15 @@ export const Form = ({ contractInfo, updateContract, closeModal }) => {
             dateValue={endDate}
             id="end"
             error={error}
-            change={date => setEndDate(date)}
+            change={date => {
+              setEndDate(date);
+              data['periodEnd'] = date;
+            }}
           />
 
           {error ? (
             <p style={{ fontSize: '11px', color: 'red' }}>
-              Contract End Date can not be greater than start date
+              Contract start date can not be greater than end date
             </p>
           ) : null}
 
@@ -137,7 +145,7 @@ export const Form = ({ contractInfo, updateContract, closeModal }) => {
           <RadioGroup
             aria-label="renewal"
             name="renewal"
-            value={radioValue}
+            value={schedule ? 'yes' : 'no'}
             onChange={handleChange}
             className={classes.radioGroup}
           >
@@ -160,12 +168,15 @@ export const Form = ({ contractInfo, updateContract, closeModal }) => {
               label="No"
             />
           </RadioGroup>
-          {radioValue === 'yes' ? (
+          {schedule ? (
             <DatePicker
               labelValue="Renew Contract"
               dateValue={renewalDate}
               id="renewal"
-              change={date => setRenewalDate(date)}
+              change={date => {
+                setRenewalDate(date);
+                data['negotiationRenewalDate'] = date;
+              }}
             />
           ) : null}
 

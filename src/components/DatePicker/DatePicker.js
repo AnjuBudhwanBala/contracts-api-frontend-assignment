@@ -18,6 +18,7 @@ const DatePicker = ({ dateValue, labelValue, change, id, error }) => {
         value={dateValue}
         onChange={change}
         error={error}
+        autoOk={true}
         KeyboardButtonProps={{
           'aria-label': 'change date'
         }}
