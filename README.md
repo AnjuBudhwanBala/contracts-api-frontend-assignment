@@ -1,3 +1,6 @@
+This is a coding assignment to show contracts data of companies update the database after updating contract information.
+
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
