@@ -2,11 +2,27 @@ import React, { useState } from 'react';
 import 'font-awesome/css/font-awesome.min.css';
 import './Contract.css';
 import CustomButton from '../CustomButton/CustomButton';
-import Modal from '../../components/Modal/Modal';
+import Modal from '../Modal/Modal';
 import CustomDateConverter from '../CustomDateConverter/CustomDateConverter';
 import Form from '../Form/Form';
 
-export const Contract = ({ contractInfo, refreshContracts }) => {
+export interface ContractObj {
+  company: string;
+  negotiationRenewalDate: string;
+  periodEnd: string;
+  periodStart: string;
+  scheduleForRenewal: boolean;
+  contractId?: string;
+}
+
+interface Props {
+  contractInfo: ContractObj;
+  refreshContracts: () => void;
+}
+
+export const Contract: React.FC<Props> = props => {
+  const { contractInfo, refreshContracts } = props;
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const {
     company,

@@ -4,8 +4,23 @@ import {
   MuiPickersUtilsProvider,
   KeyboardDatePicker
 } from '@material-ui/pickers';
+import { Moment } from 'moment';
 
-const DatePicker = ({ dateValue, labelValue, change, id, error }) => {
+interface Props {
+  dateValue: Moment;
+  labelValue: string;
+  change: (date: any) => void;
+  id: string;
+  error?: boolean;
+}
+
+const DatePicker: React.FC<Props> = ({
+  dateValue,
+  labelValue,
+  change,
+  id,
+  error
+}) => {
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
       <KeyboardDatePicker

@@ -6,7 +6,12 @@ import {
   DialogContent
 } from '@material-ui/core';
 
-const Modal = ({ modalState, closeModal, children }) => {
+interface Props {
+  modalState: boolean;
+  closeModal: () => void;
+  children: React.ReactNode;
+}
+const Modal: React.FC<Props> = ({ modalState, closeModal, children }) => {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('xs'));
   return (

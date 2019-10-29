@@ -5,8 +5,9 @@ import CustomButton from '../CustomButton/CustomButton';
 import './Form.css';
 import Moment from 'moment';
 import axios from '../../axiosUrl';
-import Spinner from '../../components/Spinner/Spinner';
+import Spinner from '../Spinner/Spinner';
 import DatePicker from '../DatePicker/DatePicker';
+import { ContractObj } from '../Contract/Contract';
 
 const useStyles = makeStyles(theme => ({
   radioGroup: {
@@ -22,9 +23,26 @@ const useStyles = makeStyles(theme => ({
   checked: {}
 }));
 
-var data = {};
+export interface Idata {
+  negotiationRenewalDate?: Moment.Moment;
+  periodStart?: Moment.Moment;
+  periodEnd?: Moment.Moment;
+  scheduleForRenewal?: boolean;
+}
 
-export const Form = ({ contractInfo, updateContract, closeModal }) => {
+var data: Idata = {};
+
+interface Props {
+  contractInfo: ContractObj;
+  updateContract: () => void;
+  closeModal: () => void;
+}
+
+export const Form: React.FC<Props> = ({
+  contractInfo,
+  updateContract,
+  closeModal
+}) => {
   const {
     company,
     contractId,
@@ -59,19 +77,25 @@ export const Form = ({ contractInfo, updateContract, closeModal }) => {
   }, []);
 
   useEffect(() => {
-    new Date(startDate).getTime() > new Date(endDate).getTime()
+    new Date(startDate.toString()).getTime() >
+    new Date(endDate.toString()).getTime()
       ? setError(true)
       : setError(false);
   }, [startDate, endDate]);
 
   //radio button handler
-  const handleChange = event => {
-    event.target.value === 'yes' ? setSchedule(true) : setSchedule(false);
-    data['scheduleForRenewal'] = event.target.value === 'yes' ? true : false;
+  const handleChange = (event: React.FormEvent<HTMLInputElement>): Idata => {
+    //console.log('event', event);
+    event.currentTarget.value === 'yes'
+      ? setSchedule(true)
+      : setSchedule(false);
+    data['scheduleForRenewal'] =
+      event.currentTarget.value === 'yes' ? true : false;
+    return data;
   };
 
   //form submit handler
-  const handleSubmit = e => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
 
@@ -88,7 +112,7 @@ export const Form = ({ contractInfo, updateContract, closeModal }) => {
         updateContract();
         closeModal();
 
-        return response.json;
+        //return response.json;
       })
       .catch(error => {
         setLoading(false);
