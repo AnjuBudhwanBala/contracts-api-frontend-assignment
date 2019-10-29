@@ -41,7 +41,7 @@ const reducer = (state: State, action: Action) => {
     }
   }
 };
-export const Contracts = () => {
+export const Contracts: React.FC<Props> = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   const fetchContracts = () => {
